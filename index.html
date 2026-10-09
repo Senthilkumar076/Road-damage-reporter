@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Road Damage Reporting</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <a class="brand" href="#top">🛣️ <span data-i18n="appTitle">Road Damage Reporting</span></a>
+    <nav class="nav">
+      <a href="#reportSec" data-i18n="navReport">Report</a>
+      <a href="#listSec" data-i18n="navReports">Reports</a>
+      <a href="#helpSec" data-i18n="navHelp">Help</a>
+    </nav>
+    <div class="top-actions">
+      <button id="btnEn" class="lang active">English</button>
+      <button id="btnTa" class="lang">தமிழ்</button>
+      <button id="btnAdmin" class="admin-btn">🔑 Admin Login</button>
+    </div>
+  </header>
+
+  <!-- HERO WITH ROAD PICTURE -->
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <h1 data-i18n="heroTitle">See a damaged road? Tell us in 1 minute!</h1>
+      <p data-i18n="heroSub">Report potholes, cracks and broken roads in your area. Together we can make our roads safe.</p>
+      <div class="hero-btns">
+        <a href="#reportSec" class="btn-big btn-yellow">📸 <span data-i18n="ctaReport">Report a Problem</span></a>
+        <a href="#listSec" class="btn-big btn-ghost">📋 <span data-i18n="ctaView">See All Reports</span></a>
+      </div>
+    </div>
+
+    <svg class="road-svg" viewBox="0 0 800 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <circle cx="640" cy="60" r="34" fill="#ffd54a" opacity=".95"/>
+      <path d="M0 110 Q120 40 240 100 T480 95 T800 100 L800 120 L0 120 Z" fill="#0f2c4d" opacity=".55"/>
+      <rect x="0" y="118" width="800" height="82" fill="#2f7d46"/>
+      <polygon points="372,118 428,118 800,200 0,200" fill="#3a3f47"/>
+      <polygon points="372,118 380,118 40,200 0,200" fill="#cfd6df" opacity=".35"/>
+      <polygon points="420,118 428,118 800,200 760,200" fill="#cfd6df" opacity=".35"/>
+      <polygon points="398,120 402,120 408,134 392,134" fill="#ffc233"/>
+      <polygon points="391,138 409,138 418,158 382,158" fill="#ffc233"/>
+      <polygon points="378,164 422,164 440,200 360,200" fill="#ffc233"/>
+      <ellipse cx="500" cy="170" rx="34" ry="9" fill="#14171c"/>
+      <ellipse cx="500" cy="168" rx="28" ry="6" fill="#0b0d10"/>
+      <ellipse cx="250" cy="182" rx="22" ry="5" fill="#14171c"/>
+      <g transform="translate(560 140)">
+        <rect x="0" y="0" width="5" height="40" fill="#8a8f98"/>
+        <polygon points="2,-2 -20,16 24,16" fill="#ffc233" stroke="#c0392b" stroke-width="3"/>
+        <text x="2" y="14" font-size="14" text-anchor="middle" font-weight="bold" fill="#222">!</text>
+      </g>
+    </svg>
+  </section>
+
+  <main>
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat s-total"><i>📊</i><b id="sTotal">0</b><span data-i18n="total">Total</span></div>
+      <div class="stat s-pending"><i>⏳</i><b id="sPending">0</b><span data-i18n="pending">Pending</span></div>
+      <div class="stat s-progress"><i>🚧</i><b id="sInprogress">0</b><span data-i18n="inprogress">In Progress</span></div>
+      <div class="stat s-fixed"><i>✅</i><b id="sFixed">0</b><span data-i18n="fixed">Fixed</span></div>
+    </section>
+
+    <section class="card progress-card">
+      <div class="progress-top">
+        <strong data-i18n="fixedRate">Roads fixed so far</strong>
+        <strong id="pctText">0%</strong>
+      </div>
+      <div class="progress"><div id="pctBar"></div></div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how">
+      <h2 class="sec-title" data-i18n="howTitle">How does it work?</h2>
+      <div class="how-grid">
+        <div class="how-card"><span class="num">1</span><div class="ico">📝</div><h3 data-i18n="how1t">Fill the form</h3><p data-i18n="how1d">Write what and where the problem is. It is very simple.</p></div>
+        <div class="how-card"><span class="num">2</span><div class="ico">📍</div><h3 data-i18n="how2t">Add location &amp; photo</h3><p data-i18n="how2d">Press one button to share your location and add a photo.</p></div>
+        <div class="how-card"><span class="num">3</span><div class="ico">🛠️</div><h3 data-i18n="how3t">We track it</h3><p data-i18n="how3d">Everyone can see the report and follow until it is fixed.</p></div>
+      </div>
+    </section>
+
+    <!-- REPORT FORM -->
+    <section class="card" id="reportSec">
+      <h2 class="sec-title left" data-i18n="newReport">Report a Road Problem</h2>
+      <p class="hint" data-i18n="formHint">Fields marked with * are required.</p>
+
+      <form id="reportForm">
+        <div class="step-head"><span class="step-no">1</span><h3 data-i18n="step1">What is the problem?</h3></div>
+
+        <div class="grid2">
+          <label><span data-i18n="fName">Your Name</span> *
+            <input type="text" id="name" data-ph="phName" placeholder="Example: Kumar" required maxlength="60"></label>
+          <label><span data-i18n="fTitle">Short Title</span> *
+            <input type="text" id="title" data-ph="phTitle" placeholder="Example: Big pothole near school" required maxlength="100"></label>
+        </div>
+
+        <p class="lbl"><span data-i18n="fType">Type of damage</span> *</p>
+        <div class="choice-grid" id="typeBox">
+          <button type="button" class="choice active" data-val="pothole"><i>🕳️</i><span data-i18n="pothole">Pothole</span></button>
+          <button type="button" class="choice" data-val="crack"><i>⚡</i><span data-i18n="crack">Crack</span></button>
+          <button type="button" class="choice" data-val="water"><i>🌊</i><span data-i18n="water">Water logging</span></button>
+          <button type="button" class="choice" data-val="broken"><i>🚧</i><span data-i18n="broken">Broken road</span></button>
+          <button type="button" class="choice" data-val="other"><i>❓</i><span data-i18n="other">Other</span></button>
+        </div>
+        <input type="hidden" id="damage_type" value="pothole">
+
+        <p class="lbl"><span data-i18n="fSeverity">How bad is it?</span> *</p>
+        <div class="sev-grid" id="sevBox">
+          <button type="button" class="sev sev-l active" data-val="low">🟢 <span data-i18n="low">Low</span></button>
+          <button type="button" class="sev sev-m" data-val="medium">🟡 <span data-i18n="medium">Medium</span></button>
+          <button type="button" class="sev sev-h" data-val="high">🔴 <span data-i18n="high">Dangerous</span></button>
+        </div>
+        <input type="hidden" id="severity" value="low">
+
+        <label><span data-i18n="fDesc">More details (optional)</span>
+          <textarea id="description" rows="3" maxlength="300" data-ph="phDesc" placeholder="Example: The pothole is very deep and bikes are slipping."></textarea>
+          <small class="counter"><span id="descCount">0</span>/300</small>
+        </label>
+
+        <div class="step-head"><span class="step-no">2</span><h3 data-i18n="step2">Where is it?</h3></div>
+        <label><span data-i18n="fAddress">Place / Street / Area</span> *
+          <input type="text" id="address" data-ph="phAddress" placeholder="Example: Gandhipuram Main Road, Coimbatore" required maxlength="150"></label>
+             <div id="similarBox" class="similar"></div>
+
+        <div class="loc-box">
+          <button type="button" id="btnLoc" class="btn-blue">📍 <span data-i18n="shareLoc">Share my location</span></button>
+          <span id="locStatus" class="loc-status"></span>
+        </div>
+        <p class="hint small" data-i18n="locHelp">Tip: stand near the damaged road, then press the button. Allow location when your browser asks.</p>
+
+        <div class="step-head"><span class="step-no">3</span><h3 data-i18n="step3">Add a photo (optional)</h3></div>
+        <div class="drop" id="drop">
+          <input type="file" id="image" accept="image/*" hidden>
+          <div id="dropText">
+            <div class="drop-ico">📷</div>
+            <strong data-i18n="dropText">Click here or drag a photo</strong>
+            <small data-i18n="dropHint">JPG, PNG or WEBP, below 5 MB</small>
+          </div>
+          <div id="previewWrap" class="preview-wrap">
+            <img id="preview" alt="">
+            <button type="button" id="btnRemove" class="remove" title="Remove">✖</button>
+          </div>
+        </div>
+
+        <button type="submit" id="btnSubmit" class="btn-submit">🚀 <span data-i18n="submit">Submit Report</span></button>
+        <p id="formMsg" class="msg"></p>
+      </form>
+    </section>
+
+    <!-- REPORT LIST -->
+    <section class="card" id="listSec">
+      <h2 class="sec-title left" data-i18n="allReports">All Reports</h2>
+
+      <div class="filters">
+        <input type="text" id="search" data-ph="search" placeholder="🔍 Search by title or place...">
+        <select id="sortBy">
+          <option value="new" data-i18n="sortNew">Newest first</option>
+          <option value="votes" data-i18n="sortVotes">Most "seen this too"</option>
+        </select>
+      </div>
+
+      <div class="chips" id="chips">
+        <button class="chip active" data-status="all" data-i18n="all">All</button>
+        <button class="chip" data-status="pending">⏳ <span data-i18n="pending">Pending</span></button>
+        <button class="chip" data-status="inprogress">🚧 <span data-i18n="inprogress">In Progress</span></button>
+        <button class="chip" data-status="fixed">✅ <span data-i18n="fixed">Fixed</span></button>
+      </div>
+
+      <div id="list"></div>
+    </section>
+
+    <!-- TIPS + FAQ -->
+    <section id="helpSec">
+      <h2 class="sec-title" data-i18n="tipsTitle">Tips for a good report</h2>
+      <div class="tips">
+        <div class="tip">📸 <span data-i18n="tip1">Take a clear photo in daylight.</span></div>
+        <div class="tip">📍 <span data-i18n="tip2">Share your location for exact place.</span></div>
+        <div class="tip">✍️ <span data-i18n="tip3">Write the street name or a nearby landmark.</span></div>
+        <div class="tip">👍 <span data-i18n="tip4">Press "I saw this too" if the problem already exists.</span></div>
+      </div>
+
+      <h2 class="sec-title" data-i18n="faqTitle">Common questions</h2>
+      <div class="faq">
+        <details><summary data-i18n="faq1q">Do I need to log in?</summary><p data-i18n="faq1a">No. Anyone can report a road problem without creating an account.</p></details>
+        <details><summary data-i18n="faq2q">Is my location safe?</summary><p data-i18n="faq2a">Your location is shared only when you press the button, and only the damaged road location is saved.</p></details>
+        <details><summary data-i18n="faq3q">What does "I saw this too" mean?</summary><p data-i18n="faq3a">It shows many people are facing the same problem, so it can be fixed sooner.</p></details>
+        <details><summary data-i18n="faq4q">Who changes the status to Fixed?</summary><p data-i18n="faq4a">Only the admin can change the status after the work is done.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>🛣️ <span data-i18n="appTitle">Road Damage Reporting</span></p>
+    <small data-i18n="footer">Made to keep our roads safe 🚗🏍️🚲</small>
+  </footer>
+
+  <!-- ADMIN LOGIN POP-UP -->
+  <div class="modal" id="adminModal">
+    <div class="modal-box">
+      <h3>🔑 <span data-i18n="adminTitle">Admin Login</span></h3>
+      <input type="password" id="adminPwd" data-ph="pwdPh" placeholder="Enter password">
+      <div class="modal-btns">
+        <button class="btn-gray" id="btnCancel" data-i18n="cancel">Cancel</button>
+        <button class="btn-blue" id="btnLogin" data-i18n="login">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox"><img id="lightImg" alt=""></div>
+
+  <div id="toasts"></div>
+  <button id="toTop" title="Top">⬆</button>
+
+  <script src="app.js"></script>
+</body>
+</html>
