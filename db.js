@@ -1,12 +1,30 @@
-const Database = require('better-sqlite3');
-const fs = require('fs');
-const path = require('path');
+const { createClient } = require('@libsql/client');
 
-// On the live website the database is kept on a permanent disk (DATA_DIR)
-const DATA_DIR = process.env.DATA_DIR || __dirname;
-fs.mkdirSync(DATA_DIR, { recursive: true });
+// On the live site these come from Render. On your PC it uses a local file.
+const db = createClient({
+  url: process.env.TURSO_DATABASE_URL || 'file:local.db',
+  authToken: process.env.TURSO_AUTH_TOKEN
+});
 
-const db = new Database(path.join(DATA_DIR, 'road.db'));
-db.exec(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
+const all = async (sql, args = []) =>
+  (await db.execute({ sql, args })).rows.map(r => ({ ...r }));
+const run = (sql, args = []) => db.execute({ sql, args });
 
-module.exports = db;
+const ready = db.execute(`CREATE TABLE IF NOT EXISTS reports (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  title TEXT NOT NULL,
+  damage_type TEXT NOT NULL,
+  severity TEXT NOT NULL,
+  description TEXT,
+  address TEXT NOT NULL,
+  latitude REAL,
+  longitude REAL,
+  image_data TEXT,
+  image_type TEXT,
+  status TEXT NOT NULL DEFAULT 'pending',
+  upvotes INTEGER NOT NULL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)`);
+
+module.exports = { all, run, ready };

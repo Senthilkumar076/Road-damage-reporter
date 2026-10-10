@@ -163,7 +163,7 @@ async function loadReports() {
     const hasLoc = r.latitude != null && r.longitude != null;
     const mapUrl = hasLoc ? `https://www.openstreetmap.org/?mlat=${r.latitude}&mlon=${r.longitude}#map=17/${r.latitude}/${r.longitude}` : '';
     const map = hasLoc ? `<a target="_blank" rel="noopener" href="${mapUrl}">📍 ${t('viewMap')}</a>` : '';
-    const imgUrl = r.image ? `${API}/uploads/${esc(r.image)}` : '';
+    const imgUrl = r.has_image ? `${API}/api/reports/${r.id}/image` : '';
     const admin = token ? `
       <select onchange="changeStatus(${r.id}, this.value)">
         ${['pending', 'inprogress', 'fixed'].map(s => `<option value="${s}" ${s === r.status ? 'selected' : ''}>${t(s)}</option>`).join('')}
@@ -171,7 +171,7 @@ async function loadReports() {
       <button class="btn-danger" onclick="delReport(${r.id})">🗑 ${t('del')}</button>` : '';
     const done = voted.includes(r.id) ? 'disabled' : '';
     return `<div class="report st-${r.status}">
-      ${r.image ? `<img src="${imgUrl}" alt="" onclick="openImg('${imgUrl}')">` : ''}
+      ${r.has_image ?`<img src="${imgUrl}" alt="" onclick="openImg('${imgUrl}')">` : ''}
       <div class="info">
         <h3>${icons[r.damage_type] || ''} ${esc(r.title)}</h3>
         <p><span class="badge ${r.status}">${t(r.status)}</span>
@@ -256,13 +256,30 @@ $('btnLoc').onclick = () => {
 };
 
 /* ===================== IMAGE UPLOAD ===================== */
-function setFile(f) {
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 1000; let w = img.width, h = img.height;
+      if (Math.max(w, h) > max) { const k = max / Math.max(w, h); w = Math.round(w * k); h = Math.round(h * k); }
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      c.toBlob(b => b ? resolve(b) : reject(), 'image/jpeg', 0.75);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+async function setFile(f) {
   if (!f) return;
   if (!f.type.startsWith('image/')) { toast(t('notImg'), 'err'); return; }
   if (f.size > 5 * 1024 * 1024) { toast(t('bigImg'), 'err'); return; }
-  selectedFile = f;
-  $('preview').src = URL.createObjectURL(f);
-  $('drop').classList.add('has-img');
+  try {
+    selectedFile = await compressImage(f);
+    $('preview').src = URL.createObjectURL(selectedFile);
+    $('drop').classList.add('has-img');
+  } catch { toast(t('notImg'), 'err'); }
 }
 function clearFile() {
   selectedFile = null; $('image').value = ''; $('preview').src = '';
